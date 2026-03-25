@@ -2,15 +2,18 @@ package com.example.praktam_2417051020.design
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.runtime.Composable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +41,7 @@ fun DashboardScreen(innerPadding: PaddingValues) {
 
         item {
             HeaderDashboard()
+            KategoriRow()
         }
 
         items(listIstilah) { item ->
@@ -81,9 +85,30 @@ fun HeaderDashboard() {
     }
 }
 
+@Composable
+fun KategoriRow() {
+    val kategoriList = listOf("Programming", "Networking", "UI/UX", "Database", "Software", "Hardware")
 
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(vertical = 8.dp)
+    ) {
+        items(kategoriList) {
+            Card(
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text(
+                    text = it,
+                    modifier = Modifier.padding(12.dp),
+                    fontSize = 12.sp
+                )
+            }
+        }
+    }
+}
 @Composable
 fun CardIstilah(data: kamusIT) {
+    var isFavorite by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -127,12 +152,28 @@ fun CardIstilah(data: kamusIT) {
                 )
             }
 
-            Text(
-                text = data.kategori,
-                fontSize = 12.sp,
-                color = Color(0xFF4CAF50),
-                fontWeight = FontWeight.SemiBold
-            )
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Icon(
+                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    contentDescription = "Favorite",
+                    tint = if (isFavorite) Color.Red else Color.Gray,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable { isFavorite = !isFavorite }
+                )
+                
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = data.kategori,
+                    fontSize = 12.sp,
+                    color = Color(0xFF4CAF50),
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
         }
     }
 }
